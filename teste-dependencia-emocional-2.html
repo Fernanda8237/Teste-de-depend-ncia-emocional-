@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teste: Qual é o seu padrão de dependência emocional?</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F3EE;
+    --warm-white: #FDFAF7;
+    --deep: #1C1612;
+    --brown: #3D2B1F;
+    --terracotta: #C4704A;
+    --blush: #E8C4B0;
+    --sage: #8B9E8A;
+    --gold: #C9A96E;
+    --muted: #9A8B7E;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--deep);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(196,112,74,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 80%, rgba(139,158,138,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* SCREENS */
+  .screen {
+    display: none;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== INTRO SCREEN ===== */
+  #screen-intro {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 0;
+  }
+  #screen-intro.active { display: flex; }
+
+  .intro-eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 28px;
+  }
+
+  .intro-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(38px, 8vw, 58px);
+    font-weight: 300;
+    line-height: 1.1;
+    color: var(--brown);
+    margin-bottom: 12px;
+  }
+
+  .intro-title em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  .intro-subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(16px, 3vw, 20px);
+    font-style: italic;
+    color: var(--muted);
+    margin-bottom: 40px;
+    line-height: 1.5;
+  }
+
+  .intro-desc {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--brown);
+    opacity: 0.8;
+    margin-bottom: 48px;
+    max-width: 520px;
+  }
+
+  .intro-meta {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .meta-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--brown);
+    color: var(--cream);
+    border: none;
+    padding: 18px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--terracotta);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  .btn-primary:hover::after { transform: translateX(0); }
+  .btn-primary span { position: relative; z-index: 1; }
+
+  .btn-arrow {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease;
+  }
+  .btn-primary:hover .btn-arrow { transform: translateX(4px); }
+
+  .intro-author {
+    margin-top: 56px;
+    padding-top: 32px;
+    border-top: 1px solid rgba(61,43,31,0.1);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blush), var(--terracotta));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .author-info { display: flex; flex-direction: column; gap: 2px; }
+  .author-name { font-size: 14px; font-weight: 500; color: var(--brown); }
+  .author-title { font-size: 12px; color: var(--muted); }
+
+  /* ===== QUIZ SCREEN ===== */
+  #screen-quiz { padding: 48px 0 80px; }
+
+  .quiz-header {
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(61,43,31,0.08);
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  .progress-text {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .progress-count {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    color: var(--terracotta);
+  }
+
+  .progress-bar {
+    height: 2px;
+    background: rgba(61,43,31,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--terracotta);
+    transition: width 0.5s ease;
+    position: relative;
+  }
+
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--terracotta);
+  }
+
+  .block-indicator {
+    margin-top: 20px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .block-pill {
+    padding: 4px 12px;
+    border: 1px solid rgba(61,43,31,0.15);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    transition: all 0.3s;
+  }
+
+  .block-pill.active {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+    color: white;
+  }
+
+  .question-area { animation: fadeUp 0.5s ease; }
+
+  .question-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13px;
+    color: var(--terracotta);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+    opacity: 0.7;
+  }
+
+  .question-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--brown);
+    margin-bottom: 36px;
+  }
+
+  .options { display: flex; flex-direction: column; gap: 12px; }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 18px 22px;
+    background: var(--warm-white);
+    border: 1px solid rgba(61,43,31,0.08);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--terracotta);
+    transform: scaleY(0);
+    transition: transform 0.25s ease;
+  }
+
+  .option:hover { 
+    border-color: rgba(196,112,74,0.3);
+    background: #FDF8F4;
+    transform: translateX(4px);
+  }
+
+  .option:hover::before { transform: scaleY(1); }
+
+  .option.selected {
+    background: #FDF0E8;
+    border-color: var(--terracotta);
+    transform: translateX(4px);
+  }
+
+  .option.selected::before { transform: scaleY(1); }
+
+  .option-letter {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid rgba(61,43,31,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    flex-shrink: 0;
+    transition: all 0.25s;
+  }
+
+  .option.selected .option-letter {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+    color: white;
+  }
+
+  .option-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--brown);
+    padding-top: 3px;
+  }
+
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 40px;
+  }
+
+  .btn-back {
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    transition: color 0.2s;
+  }
+
+  .btn-back:hover { color: var(--brown); }
+  .btn-back:disabled { opacity: 0; pointer-events: none; }
+
+  .btn-next {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-next.visible {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .btn-next:hover { background: var(--brown); }
+
+  /* ===== EMAIL SCREEN ===== */
+  #screen-email {
+    min-height: 100vh;
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px 0;
+  }
+  #screen-email.active { display: flex; }
+
+  .email-icon {
+    width: 56px;
+    height: 56px;
+    border: 1px solid rgba(196,112,74,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 32px;
+  }
+
+  .email-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(30px, 6vw, 44px);
+    font-weight: 300;
+    color: var(--brown);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .email-title em { font-style: italic; color: var(--terracotta); }
+
+  .email-desc {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--muted);
+    margin-bottom: 40px;
+    max-width: 480px;
+  }
+
+  .email-form { display: flex; flex-direction: column; gap: 16px; max-width: 480px; }
+
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .form-label {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .form-input {
+    background: var(--warm-white);
+    border: 1px solid rgba(61,43,31,0.12);
+    padding: 16px 20px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--deep);
+    outline: none;
+    transition: border-color 0.25s;
+    -webkit-appearance: none;
+  }
+
+  .form-input:focus { border-color: var(--terracotta); }
+  .form-input::placeholder { color: var(--muted); opacity: 0.5; }
+
+  .form-privacy {
+    font-size: 11px;
+    color: var(--muted);
+    opacity: 0.7;
+    line-height: 1.5;
+  }
+
+  /* ===== RESULT SCREEN ===== */
+  #screen-result { padding: 48px 0 80px; }
+
+  .result-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 20px;
+  }
+
+  .result-profile {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(34px, 7vw, 52px);
+    font-weight: 300;
+    color: var(--brown);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .result-score {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 40px;
+  }
+
+  .result-divider {
+    height: 1px;
+    background: linear-gradient(to right, var(--terracotta), transparent);
+    margin-bottom: 40px;
+    width: 120px;
+  }
+
+  .result-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 3.5vw, 26px);
+    font-style: italic;
+    color: var(--terracotta);
+    margin-bottom: 28px;
+    line-height: 1.4;
+  }
+
+  .result-body {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--brown);
+    opacity: 0.85;
+    margin-bottom: 40px;
+  }
+
+  .elo-pillars {
+    background: var(--warm-white);
+    border: 1px solid rgba(61,43,31,0.08);
+    padding: 28px;
+    margin-bottom: 40px;
+  }
+
+  .pillars-title {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .pillar-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(61,43,31,0.06);
+  }
+
+  .pillar-item:last-child { border-bottom: none; }
+
+  .pillar-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .pillar-text { font-size: 14px; line-height: 1.6; color: var(--brown); }
+  .pillar-text strong { font-weight: 500; }
+
+  .result-cta-box {
+    background: var(--brown);
+    padding: 36px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-cta-box::before {
+    content: '';
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(196,112,74,0.15);
+  }
+
+  .cta-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1.3;
+    margin-bottom: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-desc {
+    font-size: 14px;
+    line-height: 1.7;
+    color: rgba(247,243,238,0.7);
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-cta-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #25D366;
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s;
+  }
+
+  .btn-cta-whatsapp:hover { background: #1ebe5d; transform: translateY(-1px); }
+
+  .btn-cta-insta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: transparent;
+    color: var(--cream);
+    border: 1px solid rgba(247,243,238,0.3);
+    padding: 14px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.25s;
+  }
+
+  .btn-cta-insta:hover { 
+    background: rgba(247,243,238,0.1);
+    border-color: rgba(247,243,238,0.6);
+  }
+
+  .result-share {
+    text-align: center;
+    padding: 24px 0;
+    border-top: 1px solid rgba(61,43,31,0.08);
+  }
+
+  .share-text {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .btn-share {
+    background: none;
+    border: 1px solid rgba(61,43,31,0.15);
+    padding: 10px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--brown);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .btn-share:hover { background: var(--brown); color: var(--cream); }
+
+  .footer-brand {
+    text-align: center;
+    padding: 32px 0;
+    font-size: 12px;
+    color: var(--muted);
+    opacity: 0.6;
+    letter-spacing: 0.05em;
+  }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .cta-buttons { flex-direction: column; }
+    .btn-cta-whatsapp, .btn-cta-insta { justify-content: center; }
+    .intro-meta { gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- INTRO -->
+<div id="screen-intro" class="screen active">
+  <div class="container">
+    <p class="intro-eyebrow">Método ELO • Neurociência & TCC</p>
+    <h1 class="intro-title">Qual é o seu padrão de <em>dependência emocional?</em></h1>
+    <p class="intro-subtitle">Um teste baseado em neurociência, TCC e Método ELO</p>
+    <p class="intro-desc">
+      Dependência emocional não é fraqueza — é um padrão aprendido. 
+      Em menos de 5 minutos, você vai descobrir como ele se manifesta 
+      nos seus vínculos, na sua mente e no seu comportamento.
+    </p>
+    <div class="intro-meta">
+      <div class="meta-item"><div class="meta-dot"></div>10 perguntas</div>
+      <div class="meta-item"><div class="meta-dot"></div>Resultado personalizado</div>
+      <div class="meta-item"><div class="meta-dot"></div>Baseado em neurociência</div>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">
+      <span>Descobrir meu padrão</span>
+      <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <div class="intro-author">
+      <div class="author-avatar">F</div>
+      <div class="author-info">
+        <span class="author-name">Fernanda Pacheco</span>
+        <span class="author-title">Neuropsicopedagoga • Neurociência e Comportamento Humano</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="screen-quiz" class="screen">
+  <div class="container">
+    <div class="quiz-header">
+      <div class="progress-label">
+        <span class="progress-text">Sua jornada</span>
+        <span class="progress-count" id="progress-count">1 / 10</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width: 10%"></div>
+      </div>
+      <div class="block-indicator">
+        <div class="block-pill active" id="pill-E">Emocional</div>
+        <div class="block-pill" id="pill-L">Cognitivo</div>
+        <div class="block-pill" id="pill-O">Operacional</div>
+      </div>
+    </div>
+    <div class="question-area" id="question-area"></div>
+    <div class="quiz-nav">
+      <button class="btn-back" id="btn-back" onclick="prevQuestion()" disabled>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Voltar
+      </button>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">
+        Próxima
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL -->
+<div id="screen-email" class="screen">
+  <div class="container">
+    <div class="email-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#C4704A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="22,6 12,13 2,6" stroke="#C4704A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <h2 class="email-title">Seu resultado está <em>pronto.</em></h2>
+    <p class="email-desc">
+      Deixa eu enviar uma análise completa do seu perfil no seu e-mail — 
+      com orientações práticas baseadas no Método ELO.
+    </p>
+    <div class="email-form">
+      <div class="form-group">
+        <label class="form-label">Seu nome</label>
+        <input type="text" class="form-input" id="input-name" placeholder="Como posso te chamar?" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Seu e-mail</label>
+        <input type="email" class="form-input" id="input-email" placeholder="seu@email.com" />
+      </div>
+      <button class="btn-primary" onclick="showResult()">
+        <span>Ver meu resultado agora</span>
+        <svg class="btn-arrow" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <p class="form-privacy">🔒 Suas informações são confidenciais. Sem spam.</p>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<div id="screen-result" class="screen">
+  <div class="container">
+    <div id="result-content"></div>
+    <div class="footer-brand">Fernanda Pacheco • Método ELO • @fernandapacheco.elo</div>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {
+    block: 'E',
+    text: 'Quando alguém importante para você fica em silêncio ou distante, o que acontece dentro de você?',
+    options: [
+      { text: 'Fico bem, dou espaço e sigo minha rotina', score: 0 },
+      { text: 'Fico um pouco inquieta, mas consigo me distrair', score: 1 },
+      { text: 'Fico ansiosa e começo a interpretar o silêncio como rejeição', score: 2 },
+      { text: 'Entro em colapso interno — preciso de uma resposta para me sentir segura', score: 3 }
+    ]
+  },
+  {
+    block: 'E',
+    text: 'Como você reage quando decepciona alguém que ama?',
+    options: [
+      { text: 'Reconheço o erro, peço desculpas e sigo em frente', score: 0 },
+      { text: 'Me sinto mal, mas consigo me perdoar com o tempo', score: 1 },
+      { text: 'Fico ruminando por dias, com culpa desproporcional', score: 2 },
+      { text: 'Me desmorono — a ideia de perder a aprovação dessa pessoa é insuportável', score: 3 }
+    ]
+  },
+  {
+    block: 'E',
+    text: 'Você já abriu mão de algo importante para você para não perder uma pessoa?',
+    options: [
+      { text: 'Não — mantenho meus limites mesmo com tensão', score: 0 },
+      { text: 'Raramente, apenas em situações muito pontuais', score: 1 },
+      { text: 'Algumas vezes sim, e depois me arrependi', score: 2 },
+      { text: 'Com frequência — meu medo de perder fala mais alto do que minha vontade', score: 3 }
+    ]
+  },
+  {
+    block: 'E',
+    text: 'Como você se sente quando está sozinha por um período mais longo?',
+    options: [
+      { text: 'Bem — aproveito meu próprio espaço', score: 0 },
+      { text: 'Um pouco desconfortável, mas suportável', score: 1 },
+      { text: 'Ansiosa e com sensação de vazio', score: 2 },
+      { text: 'Perdida — preciso de alguém para me sentir inteira', score: 3 }
+    ]
+  },
+  {
+    block: 'L',
+    text: 'Qual frase mais se parece com o que sua mente repete sobre você em relacionamentos?',
+    options: [
+      { text: '"Sou uma pessoa completa, com ou sem alguém"', score: 0 },
+      { text: '"Prefiro estar acompanhada, mas não dependo disso"', score: 1 },
+      { text: '"Preciso me esforçar muito para ser amada de verdade"', score: 2 },
+      { text: '"Se eu mostrar quem realmente sou, vou ser abandonada"', score: 3 }
+    ]
+  },
+  {
+    block: 'L',
+    text: 'Quando um relacionamento termina, o que sua mente costuma concluir?',
+    options: [
+      { text: '"Não deu certo — próximo capítulo"', score: 0 },
+      { text: '"Dói, mas faz parte — vou aprender com isso"', score: 1 },
+      { text: '"Eu errei em algo — deveria ter feito diferente"', score: 2 },
+      { text: '"Confirma o que eu já sabia: não sou suficiente"', score: 3 }
+    ]
+  },
+  {
+    block: 'L',
+    text: 'Como você lida com elogios ou reconhecimento?',
+    options: [
+      { text: 'Recebo bem — sei que mereço', score: 0 },
+      { text: 'Fico feliz, mas às vezes duvido um pouco', score: 1 },
+      { text: 'Fico desconfiada — acho que a pessoa quer algo ou está exagerando', score: 2 },
+      { text: 'Não consigo acreditar — minha mente logo invalida', score: 3 }
+    ]
+  },
+  {
+    block: 'O',
+    text: 'Como é sua relação com dinheiro dentro dos seus relacionamentos?',
+    options: [
+      { text: 'Clara e equilibrada — tenho autonomia financeira total', score: 0 },
+      { text: 'Às vezes me sinto um pouco dependente, mas tenho consciência disso', score: 1 },
+      { text: 'Evito conflitos financeiros cedendo — é mais fácil', score: 2 },
+      { text: 'Minha estabilidade financeira está ligada à presença de alguém', score: 3 }
+    ]
+  },
+  {
+    block: 'O',
+    text: 'Quando você toma decisões importantes, o que acontece?',
+    options: [
+      { text: 'Consulto quem quero, mas a decisão final é sempre minha', score: 0 },
+      { text: 'Peço opiniões e às vezes fico em dúvida, mas decido', score: 1 },
+      { text: 'Preciso de validação externa para me sentir segura antes de agir', score: 2 },
+      { text: 'Paraliso — tenho medo de errar sem ter alguém para me amparar', score: 3 }
+    ]
+  },
+  {
+    block: 'O',
+    text: 'Você já ficou em uma relação que te fazia mal por medo de ficar sozinha?',
+    options: [
+      { text: 'Não — prefiro a solidão a um vínculo que me diminui', score: 0 },
+      { text: 'Já hesitei, mas consegui sair', score: 1 },
+      { text: 'Fiquei mais tempo do que deveria algumas vezes', score: 2 },
+      { text: 'Fico — o medo de estar só é maior do que a dor de continuar', score: 3 }
+    ]
+  }
+];
+
+const profiles = {
+  0: {
+    name: 'Vínculo Consciente',
+    range: '0 a 7 pontos',
+    tagline: 'Você já construiu uma base interna sólida.',
+    body: 'Você aprendeu — ou está aprendendo — a se relacionar a partir de um lugar de escolha, não de necessidade. Isso não significa que você não sente, não se apega ou não sofre. Significa que sua segurança emocional não depende inteiramente da presença ou aprovação de outra pessoa.\n\nDo ponto de vista neurocientífico, seu sistema de regulação emocional está mais calibrado: você consegue tolerar a incerteza nos vínculos sem entrar em colapso. Sua amígdala não interpreta o silêncio como abandono — e isso é resultado de processos internos que você provavelmente trabalhou, mesmo sem perceber.\n\nIsso não significa que o caminho acabou. Vínculos conscientes precisam ser nutridos — e padrões antigos podem voltar em momentos de estresse ou luto.',
+    pillars: [
+      { dot: '#C4704A', text: '<strong>Emocional:</strong> Você sente e processa — sem se perder no que sente' },
+      { dot: '#C9A96E', text: '<strong>Lógico/Cognitivo:</strong> Suas crenças sobre amor e vínculo são mais funcionais do que limitantes' },
+      { dot: '#8B9E8A', text: '<strong>Operacional:</strong> Você age a partir de valores, não de medo' }
+    ],
+    cta: 'Quer entender mais profundamente como seus três pilares ELO se conectam?'
+  },
+  1: {
+    name: 'Vínculo Ansioso',
+    range: '8 a 14 pontos',
+    tagline: 'Você se conecta com intensidade — mas ainda busca no outro o que precisa encontrar em você.',
+    body: 'Você não é completamente dependente, mas sente aquela tensão familiar: o silêncio que incomoda demais, a necessidade de confirmação que aparece nas horas erradas, a sensação de que precisa se provar para continuar sendo amada.\n\nNeurologicamente, seu sistema de apego está em alerta frequente. Seu cérebro aprendeu — provavelmente cedo — que o vínculo é algo que pode ser perdido, e desde então monitora os sinais de perigo nos relacionamentos com uma sensibilidade acima do necessário. Não é fraqueza. É uma adaptação que um dia fez sentido — e que agora te custa caro.\n\nA boa notícia: você está num ponto de virada. Já tem consciência suficiente para perceber o padrão — e isso é o primeiro passo para interrompê-lo.',
+    pillars: [
+      { dot: '#C4704A', text: '<strong>Emocional:</strong> O medo de abandono ativa antes da ameaça real existir' },
+      { dot: '#C9A96E', text: '<strong>Lógico/Cognitivo:</strong> Algumas crenças ainda dizem que você precisa merecer ser amada' },
+      { dot: '#8B9E8A', text: '<strong>Operacional:</strong> Você até age — mas às vezes cede onde não deveria' }
+    ],
+    cta: 'Quer entender de onde vem esse padrão e como recondicionar sua mente para vínculos mais seguros?'
+  },
+  2: {
+    name: 'Mente que Sabota',
+    range: '15 a 21 pontos',
+    tagline: 'Sua mente aprendeu a se proteger — mas o escudo virou uma prisão.',
+    body: 'Você carrega crenças profundas sobre não ser suficiente, não merecer, precisar se esforçar demais para ser amada. Essas crenças não são verdades — são programações. Foram instaladas antes que você tivesse maturidade neurológica para questioná-las.\n\nDo ponto de vista da neurociência, crenças limitantes ativam circuitos neurais automaticamente — é por isso que mesmo quando você quer agir diferente, algo por dentro te puxa de volta para o padrão antigo. Não é falta de força de vontade. É o seu sistema nervoso fazendo o que aprendeu a fazer.\n\nVocê não está quebrada. Você está com um padrão que pode ser reconhecido, compreendido e reconfigurado.',
+    pillars: [
+      { dot: '#C4704A', text: '<strong>Emocional:</strong> Emoções intensas e difíceis de regular, especialmente medo e culpa' },
+      { dot: '#C9A96E', text: '<strong>Lógico/Cognitivo:</strong> Narrativas de autossabotagem muito ativas e automáticas' },
+      { dot: '#8B9E8A', text: '<strong>Operacional:</strong> Paralisia ou comportamentos que contradizem o que você realmente quer' }
+    ],
+    cta: 'Esse é exatamente o trabalho que faço. Se você se reconheceu aqui, quero te convidar para uma conversa.'
+  },
+  3: {
+    name: 'Dependência Integrada',
+    range: '22 a 30 pontos',
+    tagline: 'Você chegou até aqui — e isso já é um ato de coragem.',
+    body: 'Fazer este teste e se reconhecer nas respostas exige honestidade. E honestidade consigo mesma é o começo de tudo.\n\nO que você está vivendo tem um nome, tem explicação e — mais importante — tem caminho de saída. A dependência emocional integrada significa que o padrão está presente nos três pilares: no que você sente, no que você pensa e no que você faz. Não é um defeito de caráter. É o resultado de vínculos que não te ensinaram a ser segura dentro de você mesma.\n\nNeurologicamente, seu sistema nervoso aprendeu que o outro é a fonte de regulação. Isso não aconteceu por acaso — e não vai embora só com força de vontade.\n\nVocê não precisa continuar carregando isso sozinha.',
+    pillars: [
+      { dot: '#C4704A', text: '<strong>Emocional:</strong> Regulação emocional muito dependente da presença e reação do outro' },
+      { dot: '#C9A96E', text: '<strong>Lógico/Cognitivo:</strong> Crenças centrais de insuficiência e medo de abandono muito ativas' },
+      { dot: '#8B9E8A', text: '<strong>Operacional:</strong> Comportamentos de fuga, excesso de entrega ou paralisia financeira' }
+    ],
+    cta: 'Meu trabalho é exatamente esse — acompanhar mulheres que vivem esse padrão, do neurológico ao comportamental.'
+  }
+};
+
+let currentQ = 0;
+let answers = new Array(10).fill(null);
+let scores = { E: 0, L: 0, O: 0 };
+
+function startQuiz() {
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const letters = ['A', 'B', 'C', 'D'];
+
+  document.getElementById('progress-count').textContent = `${currentQ + 1} / 10`;
+  document.getElementById('progress-fill').style.width = `${((currentQ + 1) / 10) * 100}%`;
+
+  ['E', 'L', 'O'].forEach(b => {
+    document.getElementById('pill-' + b).classList.toggle('active', q.block === b);
+  });
+
+  document.getElementById('btn-back').disabled = currentQ === 0;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.classList.toggle('visible', answers[currentQ] !== null);
+  nextBtn.innerHTML = currentQ === 9
+    ? 'Ver resultado <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    : 'Próxima <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  document.getElementById('question-area').innerHTML = `
+    <p class="question-number">Pergunta ${currentQ + 1}</p>
+    <p class="question-text">${q.text}</p>
+    <div class="options">
+      ${q.options.map((opt, i) => `
+        <button class="option ${answers[currentQ] === i ? 'selected' : ''}" onclick="selectOption(${i})">
+          <span class="option-letter">${letters[i]}</span>
+          <span class="option-text">${opt.text}</span>
+        </button>
+      `).join('')}
+    </div>
+  `;
+}
+
+function selectOption(idx) {
+  answers[currentQ] = idx;
+  renderQuestion();
+}
+
+function nextQuestion() {
+  if (answers[currentQ] === null) return;
+  if (currentQ < 9) {
+    currentQ++;
+    renderQuestion();
+  } else {
+    showScreen('screen-email');
+  }
+}
+
+function prevQuestion() {
+  if (currentQ > 0) { currentQ--; renderQuestion(); }
+}
+
+function calculateResult() {
+  let total = 0;
+  scores = { E: 0, L: 0, O: 0 };
+  questions.forEach((q, i) => {
+    if (answers[i] !== null) {
+      const s = q.options[answers[i]].score;
+      total += s;
+      scores[q.block] += s;
+    }
+  });
+  if (total <= 7) return { profile: profiles[0], total };
+  if (total <= 14) return { profile: profiles[1], total };
+  if (total <= 21) return { profile: profiles[2], total };
+  return { profile: profiles[3], total };
+}
+
+function showResult() {
+  const name = document.getElementById('input-name').value.trim();
+  const { profile, total } = calculateResult();
+
+  const greeting = name ? `${name}, ` : '';
+  const bodyParagraphs = profile.body.split('\n\n').map(p => `<p class="result-body">${p}</p>`).join('');
+
+  document.getElementById('result-content').innerHTML = `
+    <p class="result-eyebrow">Seu resultado • Método ELO</p>
+    <h2 class="result-profile">${profile.name}</h2>
+    <p class="result-score">${profile.range} • Sua pontuação: ${total}/30</p>
+    <div class="result-divider"></div>
+    <p class="result-tagline">"${profile.tagline}"</p>
+    ${bodyParagraphs}
+    <div class="elo-pillars">
+      <p class="pillars-title">Como isso aparece no seu ELO</p>
+      ${profile.pillars.map(p => `
+        <div class="pillar-item">
+          <div class="pillar-dot" style="background:${p.dot}"></div>
+          <p class="pillar-text">${p.text}</p>
+        </div>
+      `).join('')}
+    </div>
+    <div class="result-cta-box">
+      <p class="cta-title">${greeting}${profile.cta}</p>
+      <p class="cta-desc">O Método ELO trabalha exatamente isso — do neurológico ao comportamental, com uma abordagem que integra neurociência, TCC e autoconhecimento real.</p>
+      <div class="cta-buttons">
+        <a class="btn-cta-whatsapp" href="https://wa.me/5521960189233?text=Olá%20Fernanda!%20Fiz%20o%20teste%20e%20meu%20perfil%20é%20${encodeURIComponent(profile.name)}.%20Quero%20saber%20mais." target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Falar no WhatsApp
+        </a>
+        <a class="btn-cta-insta" href="https://instagram.com/fernandapacheco.elo" target="_blank">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          Ver no Instagram
+        </a>
+      </div>
+    </div>
+    <div class="result-share">
+      <p class="share-text">Conhece alguém que precisa fazer este teste?</p>
+      <button class="btn-share" onclick="shareTest()">Compartilhar o teste</button>
+    </div>
+  `;
+
+  showScreen('screen-result');
+}
+
+function shareTest() {
+  if (navigator.share) {
+    navigator.share({
+      title: 'Teste: Qual é o seu padrão de dependência emocional?',
+      text: 'Fiz esse teste da Fernanda Pacheco e me surpreendi com o resultado! Vale muito a pena.',
+      url: window.location.href
+    });
+  } else {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      alert('Link copiado! Compartilhe com quem precisar.');
+    });
+  }
+}
+</script>
+</body>
+</html>
